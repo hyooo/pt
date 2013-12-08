@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">상품가격관찰자</string>
+    <string name="action_settings">Settings</string>
+    <string name="network_error">network error</string>
+    <string name="bad_url">bad url</string>
+    <string name="url_default">http://prod.danawa.com/info/?pcode=1596012&amp;cate1=861&amp;cate2=874&amp;cate3=11043&amp;cate4=0</string>
+    <string name="button_1_testhttpurlconnection">download</string>
+    <string name="button_2_testhttpurlconnection">parse</string>
+    <string name="button_3_testhttpurlconnection">showdb</string>
+    <string name="title_activity_main">관찰자</string>
+    <string name="run_testhttpurlconnection">TestHttpUrlConnection</string>
+    <string name="ready">ready.</string>
+
+</resources>
