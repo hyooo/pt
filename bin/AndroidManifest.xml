@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kr.ac.skuniv.hyosang.testhttpurlconnection"
+    package="kr.ac.skuniv.ahn.pricetracker"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -21,13 +21,22 @@
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="kr.ac.skuniv.ahn.pricetracker.TestHttpURLConnection"
-            android:label="@string/title_activity_main" >
+            android:name="kr.ac.skuniv.ahn.pricetracker.HttpConnParseDbActivity"
+            android:label="@string/title_activity_http_conn_parse_db" >
         </activity>
+        <activity
+            android:name="kr.ac.skuniv.ahn.pricetracker.ProductListActivity"
+            android:label="@string/title_activity_product_list" >
+        </activity>
+        <service 
+            android:enabled="true"
+            android:name="kr.ac.skuniv.ahn.pricetracker.TrackServic" >            
+        </service>
     </application>
 
 </manifest>

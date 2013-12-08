@@ -31,7 +31,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
 				+ "product_code TEXT, "
 				+ "img_url TEXT, "
 				+ "product_name TEXT);");
-		db.execSQL("CREATE TABLE price ( _id INTEGER PRIMARY KEY AUTOINCREMENT, "
+		db.execSQL("CREATE TABLE price ( _id_price INTEGER PRIMARY KEY AUTOINCREMENT, "
 				+ "product_code TEXT, "
 				+ "lowest_price INTEGER, "
 				+ "delivery_charge INTEGER, "

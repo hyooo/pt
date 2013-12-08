@@ -11,8 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import kr.ac.skuniv.hyosang.testhttpurlconnection.R;
-
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.SimpleXmlSerializer;
@@ -32,7 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TestHttpURLConnection extends Activity {
+public class HttpConnParseDbActivity extends Activity {
+
 	private TextView mMessage;
 	private EditText mUrl;
 	private TextView mSource;
@@ -48,7 +47,7 @@ public class TestHttpURLConnection extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_test_http_urlconnection);
+		setContentView(R.layout.activity_http_conn_parse_db);
 		mMessage = (TextView) findViewById(R.id.message);
 		mUrl = (EditText) findViewById(R.id.url);
 		mSource = (TextView) findViewById(R.id.source);
@@ -79,7 +78,7 @@ public class TestHttpURLConnection extends Activity {
 		try {
 			danawaDb = helper.getWritableDatabase();
 		} catch (SQLiteException e) {
-			danawaDb = helper.getReadableDatabase();
+//			danawaDb = helper.getReadableDatabase();
 		}
 
 		// click download button
@@ -104,32 +103,36 @@ public class TestHttpURLConnection extends Activity {
 		case R.id.showdb:
 			StringBuilder sbTmp = new StringBuilder();
 
-			Cursor cursor = danawaDb.rawQuery("SELECT * FROM product", null);
+			// product
+
+			Cursor cursor = danawaDb.rawQuery("SELECT * FROM product;", null);
 			int colCnt = cursor.getColumnCount();
 			for (int index = 0; index < colCnt; index++) {
 				sbTmp.append(cursor.getColumnName(index));
-				sbTmp.append("\t");
+				sbTmp.append(" ");
 			}
 			sbTmp.append("\n");
 			while (cursor.moveToNext()) {
 				for (int index = 0; index < colCnt; index++) {
 					sbTmp.append(cursor.getString(index));
-					sbTmp.append("\t");
+					sbTmp.append(" ");
 				}
 				sbTmp.append("\n");
 			}
 
-			cursor = danawaDb.rawQuery("SELECT * FROM price", null);
+			// price
+
+			cursor = danawaDb.rawQuery("SELECT * FROM price;", null);
 			colCnt = cursor.getColumnCount();
 			for (int index = 0; index < colCnt; index++) {
 				sbTmp.append(cursor.getColumnName(index));
-				sbTmp.append("\t");
+				sbTmp.append(" ");
 			}
 			sbTmp.append("\n");
 			while (cursor.moveToNext()) {
 				for (int index = 0; index < colCnt; index++) {
 					sbTmp.append(cursor.getString(index));
-					sbTmp.append("\t");
+					sbTmp.append(" ");
 				}
 				sbTmp.append("\n");
 			}
@@ -137,11 +140,9 @@ public class TestHttpURLConnection extends Activity {
 			cursor.close();
 			// http://www.androidpub.com/431954
 			// provider 가 다 해줍니다.
-//			danawaDb.close();
 			helper.close();
 
 			mSource.setText(mSource.getText() + sbTmp.toString());
-			sbTmp.setLength(0);
 			sbTmp = null;
 
 			break;
@@ -394,9 +395,10 @@ public class TestHttpURLConnection extends Activity {
 			mMessage.setText(mMessage.getText() + "p");
 
 			// table product 에 중복 레코드 있는지 product code 로 검사해서 없으면 레코드 추가
-			Cursor cursor =
-					danawaDb.rawQuery("SELECT product_code FROM product WHERE product_code="
-							+ prodInfo[1], null);
+			Cursor cursor = danawaDb.rawQuery("SELECT product_code "
+							+ "FROM product "
+							+ "WHERE product_code = "
+							+ prodInfo[1] + ";", null);
 			if (cursor.getCount() == 0) {
 				/*
 				 * 0. html url
@@ -409,18 +411,18 @@ public class TestHttpURLConnection extends Activity {
 				 */
 				// @formatter:off
 				danawaDb.execSQL("INSERT INTO product VALUES (null, '"
-						+ prodInfo[0] + "', '"
-						+ prodInfo[1] + "', '"
-						+ prodInfo[3] + "', '"
-						+ prodInfo[2] + "');");
+						+ prodInfo[0] + "', '"	// html url
+						+ prodInfo[1] + "', '"	// product code
+						+ prodInfo[3] + "', '"	// image url
+						+ prodInfo[2] + "');");	// product name
 				cursor.close();
 			}
 			// table price 에 레코드 추가
 			danawaDb.execSQL("INSERT INTO price VALUES (null, '"
-						+ prodInfo[1] + "', "
-						+ prodInfo[4] + ", "
-						+ prodInfo[5] + ", "
-						+ prodInfo[6] + ", "
+						+ prodInfo[1] + "', "	// product code
+						+ prodInfo[4] + ", "	// lowest price			INTEGER
+						+ prodInfo[5] + ", "	// delivery charge		INTEGER
+						+ prodInfo[6] + ", "	// open market price	INTEGER
 						+ "datetime('now'));");
 			// @formatter:on
 		}
