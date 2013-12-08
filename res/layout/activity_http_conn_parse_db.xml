@@ -25,6 +25,22 @@
         </Button>
 
         <Button
+            android:id="@+id/dl2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/dn2" >
+        </Button>
+
+                <Button
+            android:id="@+id/dl3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/dn3" >
+        </Button>
+
+        <Button
             android:id="@+id/parse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

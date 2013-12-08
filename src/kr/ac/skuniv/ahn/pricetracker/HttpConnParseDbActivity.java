@@ -38,11 +38,15 @@ public class HttpConnParseDbActivity extends Activity {
 	private Button btnDl;
 	private Button btnParse;
 	private Button btnShowDb;
-	private StringBuilder mStringBuilder = new StringBuilder(); // html 파일 저장
-	private String prodInfo[] = new String[7]; // html 파일에서 추출한 하나의 상품 정보 저장
+	private StringBuilder mStringBuilder; // html 파일 저장
+	private String prodInfo[]; // html 파일에서 추출한 하나의 상품 정보 저장
 
 	ProductDbHelper helper;
 	SQLiteDatabase danawaDb;
+
+	String strUrl1;
+	String strUrl2;
+	String strUrl3;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,23 +59,18 @@ public class HttpConnParseDbActivity extends Activity {
 		btnParse = (Button) findViewById(R.id.parse);
 		btnShowDb = (Button) findViewById(R.id.showdb);
 
-		/*
-		 * 0. html url
-		 * 1. product code
-		 * 2. product name
-		 * 3. image url
-		 * 4. lowest price
-		 * 5. delivery charge
-		 * 6. open market price
-		 */
+		mStringBuilder = new StringBuilder();
+		prodInfo = new String[7];
 
-		// 0. html url
-		// 1. product code
-		String strTmp = mUrl.getText().toString();
-		int firstAmpersand = strTmp.indexOf('&');
-		prodInfo[0] = strTmp.substring(0, firstAmpersand);
-		int firstEqualSign = prodInfo[0].indexOf('=');
-		prodInfo[1] = prodInfo[0].substring(firstEqualSign + 1, prodInfo[0].length());
+		strUrl1 =
+				"http://prod.danawa.com/info/?pcode=1596012"
+						+ "&cate1=861&cate2=874&cate3=11043&cate4=0";
+		strUrl2 =
+				"http://prod.danawa.com/info/?pcode=1304396"
+						+ "&cate1=861&cate2=874&cate3=11043&cate4=0";
+		strUrl3 =
+				"http://prod.danawa.com/info/?pcode=1853510"
+						+ "&cate1=861&cate2=32617&cate3=32623&cate4=0";
 
 		// Database
 		helper = new ProductDbHelper(getApplicationContext(), "danawa.db", null, 2);
@@ -82,20 +81,34 @@ public class HttpConnParseDbActivity extends Activity {
 		}
 
 		// click download button
-		onClick(btnDl);
+//		onClick(btnDl);
 	}
 
 	public void onClick(View v) {
-		URL url = null;
+
+		URL url1 = null;
+		URL url2 = null;
+		URL url3 = null;
 		try {
-			url = new URL(mUrl.getText().toString());
+			url1 = new URL(strUrl1);
+			url2 = new URL(strUrl2);
+			url3 = new URL(strUrl3);
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
 
 		switch (v.getId()) {
 		case R.id.download:
-			new DownloadHtmlTask().execute(url);
+			mUrl.setText(url1.toString());
+			new DownloadHtmlTask().execute(url1);
+			break;
+		case R.id.dl2:
+			mUrl.setText(url2.toString());
+			new DownloadHtmlTask().execute(url2);
+			break;
+		case R.id.dl3:
+			mUrl.setText(url3.toString());
+			new DownloadHtmlTask().execute(url3);
 			break;
 		case R.id.parse:
 			new ParseTask().execute(mStringBuilder);
@@ -139,8 +152,8 @@ public class HttpConnParseDbActivity extends Activity {
 
 			cursor.close();
 			// http://www.androidpub.com/431954
-			// provider 가 다 해줍니다.
-			helper.close();
+			// provider 가 다 해 줌.
+//			helper.close();
 
 			mSource.setText(mSource.getText() + sbTmp.toString());
 			sbTmp = null;
@@ -165,6 +178,25 @@ public class HttpConnParseDbActivity extends Activity {
 			HttpURLConnection conn = null;
 			InputStreamReader isr = null;
 			StringBuilder sb = new StringBuilder();
+
+			/*
+			 * 0. html url
+			 * 1. product code
+			 * 2. product name
+			 * 3. image url
+			 * 4. lowest price
+			 * 5. delivery charge
+			 * 6. open market price
+			 */
+
+			// 0. html url
+			// 1. product code
+			String strTmp = urls[0].toString();
+			int firstAmpersand = strTmp.indexOf('&');
+			prodInfo[0] = strTmp.substring(0, firstAmpersand);
+			strTmp = null;
+			int firstEqualSign = prodInfo[0].indexOf('=');
+			prodInfo[1] = prodInfo[0].substring(firstEqualSign + 1, prodInfo[0].length());
 
 			try {
 				conn = (HttpURLConnection) urls[0].openConnection();
@@ -232,6 +264,7 @@ public class HttpConnParseDbActivity extends Activity {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private class ParseTask extends AsyncTask<StringBuilder, Void, StringBuilder> {
+
 		private long time;
 
 		// You cannot create an array of generic type, instead, you should do:
@@ -395,10 +428,9 @@ public class HttpConnParseDbActivity extends Activity {
 			mMessage.setText(mMessage.getText() + "p");
 
 			// table product 에 중복 레코드 있는지 product code 로 검사해서 없으면 레코드 추가
-			Cursor cursor = danawaDb.rawQuery("SELECT product_code "
-							+ "FROM product "
-							+ "WHERE product_code = "
-							+ prodInfo[1] + ";", null);
+			Cursor cursor =
+					danawaDb.rawQuery("SELECT product_code " + "FROM product "
+							+ "WHERE product_code = " + prodInfo[1] + ";", null);
 			if (cursor.getCount() == 0) {
 				/*
 				 * 0. html url
