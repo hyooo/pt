@@ -36,6 +36,9 @@
         <service 
             android:enabled="true"
             android:name="kr.ac.skuniv.ahn.pricetracker.TrackServic" >            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </service>
     </application>
 

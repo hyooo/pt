@@ -393,7 +393,9 @@ public class HttpConnParseDbActivity extends Activity {
 					}
 					if (counter >= 6) break; // 필요한 정보 얻었으면 파싱 중단
 					parserEvent = parser.next();
-				}
+					
+				} // end of while (parserEvent != XmlPullParser.END_DOCUMENT)
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (XmlPullParserException e) {

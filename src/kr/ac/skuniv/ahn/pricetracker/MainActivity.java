@@ -35,10 +35,10 @@ public class MainActivity extends Activity {
 			startActivity(new Intent(this, ProductListActivity.class));
 			break;
 		case R.id.btn_service_start:
-			startService(new Intent(this, TrackService.class));
+			startService(new Intent(this, TrackerService.class));
 			break;
 		case R.id.btn_service_stop:
-			stopService(new Intent(this, TrackService.class));
+			stopService(new Intent(this, TrackerService.class));
 			break;
 		}
 	}
